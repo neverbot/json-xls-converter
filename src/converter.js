@@ -102,8 +102,8 @@ converter.prepareJson = (json, config) => {
 };
 
 converter.middleware = (req, res, next) => {
-  res.xls = (fn, data, config) => {
-    const xls = converter(data, config);
+  res.xls = async (fn, data, config) => {
+    const xls = await converter(data, config);
     res.setHeader('Content-Type', 'application/vnd.openxmlformats');
     res.setHeader('Content-Disposition', 'attachment; filename=' + fn);
     res.end(xls, 'binary');
