@@ -10,107 +10,109 @@ var sheetBack =
   ' <x:pageMargins left="0.75" right="0.75" top="0.75" bottom="0.5" header="0.5" footer="0.75" />' +
   ' <x:headerFooter /></x:worksheet>';
 
-function Sheet(config, xlsx, shareStrings, convertedShareStrings) {
-  this.config = config;
-  this.xlsx = xlsx;
-  this.shareStrings = shareStrings;
-  this.convertedShareStrings = convertedShareStrings;
-}
-
-Sheet.prototype.generate = function () {
-  var config = this.config,
-    xlsx = this.xlsx;
-  var cols = config.cols,
-    data = config.rows,
-    colsLength = cols.length,
-    rows = '',
-    row = '',
-    colsWidth = '',
-    styleIndex,
-    self = this,
-    k;
-  config.fileName =
-    'xl/worksheets/' + (config.name || 'sheet').replace(/[*?\]\[\/\/]/g, '') + '.xml';
-  if (config.stylesXmlFile) {
-    var path = config.stylesXmlFile;
-    var styles = null;
-    styles = fs.readFileSync(path, 'utf8');
-    if (styles) {
-      xlsx.file('xl/styles.xml', styles);
-    }
+class Sheet {
+  constructor(config, xlsx, shareStrings, convertedShareStrings) {
+    this.config = config;
+    this.xlsx = xlsx;
+    this.shareStrings = shareStrings;
+    this.convertedShareStrings = convertedShareStrings;
   }
 
-  //first row for column caption
-  row = '<x:row r="1" spans="1:' + colsLength + '">';
-  var colStyleIndex;
-  for (k = 0; k < colsLength; k++) {
-    colStyleIndex = cols[k].captionStyleIndex || 0;
-    row += addStringCell(self, getColumnLetter(k + 1) + 1, cols[k].caption, colStyleIndex);
-    if (cols[k].width) {
-      colsWidth +=
-        '<col customWidth = "1" width="' +
-        cols[k].width +
-        '" max = "' +
-        (k + 1) +
-        '" min="' +
-        (k + 1) +
-        '"/>';
-    }
-  }
-  row += '</x:row>';
-  rows += row;
-
-  //fill in data
-  var i,
-    j,
-    r,
-    cellData,
-    currRow,
-    cellType,
-    dataLength = data.length;
-
-  for (i = 0; i < dataLength; i++) {
-    (r = data[i]), (currRow = i + 2);
-    row = '<x:row r="' + currRow + '" spans="1:' + colsLength + '">';
-    for (j = 0; j < colsLength; j++) {
-      styleIndex = null;
-      cellData = r[j];
-      cellType = cols[j].type;
-      if (typeof cols[j].beforeCellWrite === 'function') {
-        var e = {
-          rowNum: currRow,
-          styleIndex: null,
-          cellType: cellType,
-        };
-        cellData = cols[j].beforeCellWrite(r, cellData, e);
-        styleIndex = e.styleIndex || styleIndex;
-        cellType = e.cellType;
-        // Parsing error: Deleting local variable in strict mode.
-        // delete e;
-        e = null;
+  generate() {
+    var config = this.config,
+      xlsx = this.xlsx;
+    var cols = config.cols,
+      data = config.rows,
+      colsLength = cols.length,
+      rows = '',
+      row = '',
+      colsWidth = '',
+      styleIndex,
+      self = this,
+      k;
+    config.fileName =
+      'xl/worksheets/' + (config.name || 'sheet').replace(/[*?\]\[\/\/]/g, '') + '.xml';
+    if (config.stylesXmlFile) {
+      var path = config.stylesXmlFile;
+      var styles = null;
+      styles = fs.readFileSync(path, 'utf8');
+      if (styles) {
+        xlsx.file('xl/styles.xml', styles);
       }
-      switch (cellType) {
-        case 'number':
-          row += addNumberCell(getColumnLetter(j + 1) + currRow, cellData, styleIndex);
-          break;
-        case 'date':
-          row += addDateCell(getColumnLetter(j + 1) + currRow, cellData, styleIndex);
-          break;
-        case 'bool':
-          row += addBoolCell(getColumnLetter(j + 1) + currRow, cellData, styleIndex);
-          break;
-        default:
-          row += addStringCell(self, getColumnLetter(j + 1) + currRow, cellData, styleIndex);
+    }
+
+    //first row for column caption
+    row = '<x:row r="1" spans="1:' + colsLength + '">';
+    var colStyleIndex;
+    for (k = 0; k < colsLength; k++) {
+      colStyleIndex = cols[k].captionStyleIndex || 0;
+      row += addStringCell(self, getColumnLetter(k + 1) + 1, cols[k].caption, colStyleIndex);
+      if (cols[k].width) {
+        colsWidth +=
+          '<col customWidth = "1" width="' +
+          cols[k].width +
+          '" max = "' +
+          (k + 1) +
+          '" min="' +
+          (k + 1) +
+          '"/>';
       }
     }
     row += '</x:row>';
     rows += row;
+
+    //fill in data
+    var i,
+      j,
+      r,
+      cellData,
+      currRow,
+      cellType,
+      dataLength = data.length;
+
+    for (i = 0; i < dataLength; i++) {
+      (r = data[i]), (currRow = i + 2);
+      row = '<x:row r="' + currRow + '" spans="1:' + colsLength + '">';
+      for (j = 0; j < colsLength; j++) {
+        styleIndex = null;
+        cellData = r[j];
+        cellType = cols[j].type;
+        if (typeof cols[j].beforeCellWrite === 'function') {
+          var e = {
+            rowNum: currRow,
+            styleIndex: null,
+            cellType: cellType,
+          };
+          cellData = cols[j].beforeCellWrite(r, cellData, e);
+          styleIndex = e.styleIndex || styleIndex;
+          cellType = e.cellType;
+          // Parsing error: Deleting local variable in strict mode.
+          // delete e;
+          e = null;
+        }
+        switch (cellType) {
+          case 'number':
+            row += addNumberCell(getColumnLetter(j + 1) + currRow, cellData, styleIndex);
+            break;
+          case 'date':
+            row += addDateCell(getColumnLetter(j + 1) + currRow, cellData, styleIndex);
+            break;
+          case 'bool':
+            row += addBoolCell(getColumnLetter(j + 1) + currRow, cellData, styleIndex);
+            break;
+          default:
+            row += addStringCell(self, getColumnLetter(j + 1) + currRow, cellData, styleIndex);
+        }
+      }
+      row += '</x:row>';
+      rows += row;
+    }
+    if (colsWidth !== '') {
+      sheetFront += '<cols>' + colsWidth + '</cols>';
+    }
+    xlsx.file(config.fileName, sheetFront + '<x:sheetData>' + rows + '</x:sheetData>' + sheetBack);
   }
-  if (colsWidth !== '') {
-    sheetFront += '<cols>' + colsWidth + '</cols>';
-  }
-  xlsx.file(config.fileName, sheetFront + '<x:sheetData>' + rows + '</x:sheetData>' + sheetBack);
-};
+}
 
 /*
 var startTag = function (obj, tagName, closed) {
@@ -187,4 +189,4 @@ var getColumnLetter = function (col) {
   return String.fromCharCode.apply(null, array.reverse());
 };
 
-export default { Sheet };
+export default Sheet;

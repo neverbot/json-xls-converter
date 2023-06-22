@@ -107,16 +107,16 @@ function generateSharedStringsFile(xlsx) {
   convertedShareStrings = '';
 }
 
-function executeAsync(config, callBack) {
-  return process.nextTick(function () {
-    // var r = exports.execute(config); ??
-    var r = execute(config);
-    callBack(r);
-  });
-}
+// function executeAsync(config, callBack) {
+//   return process.nextTick(function () {
+//     // var r = exports.execute(config); ??
+//     var r = execute(config);
+//     callBack(r);
+//   });
+// }
 
-function execute(config) {
-  var xlsx = new JSZip.loadAsync(templateXLSX, {
+async function execute(config) {
+  var xlsx = await JSZip.loadAsync(templateXLSX, {
     base64: true,
     checkCRC32: false,
   });
@@ -125,17 +125,21 @@ function execute(config) {
   convertedShareStrings = '';
 
   var configs = [];
+
   if (config instanceof Array) {
     configs = config;
   } else {
     configs.push(config);
   }
+
   generateMultiSheets(configs, xlsx);
   generateWorkbook(configs, xlsx);
   generateRel(configs, xlsx);
   generateContentType(configs, xlsx);
   generateSharedStringsFile(xlsx);
-  var results = xlsx.generate({
+
+  var results = await xlsx.generateAsync({
+    type: 'uint8array',
     base64: false,
     compression: 'DEFLATE',
   });
@@ -150,6 +154,6 @@ function execute(config) {
 }
 
 export default {
-  executeAsync,
+  // executeAsync,
   execute,
 };
