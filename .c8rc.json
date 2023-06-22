@@ -1,9 +1,9 @@
 {
   "check-coverage": true,
-  "branches": 84,
-  "lines": 89,
-  "functions": 80,
-  "statements": 89,
+  "branches": 88,
+  "lines": 93,
+  "functions": 90,
+  "statements": 93,
   "exclude": [
     "index.js",
     "coverage",
