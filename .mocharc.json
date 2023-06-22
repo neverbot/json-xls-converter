@@ -1,0 +1,9 @@
+{
+  "recursive": true,
+  "ui": "bdd",
+  "reporter": "spec",
+  "globals": "global",
+  "timeout": 6000,
+  "growl": true,
+  "exit": true
+}
