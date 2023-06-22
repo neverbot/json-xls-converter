@@ -1,6 +1,7 @@
 .DS_Store
 .idea/
 .build/
+.github/
 node_modules/
 coverage/
 *.iml
