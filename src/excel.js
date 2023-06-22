@@ -116,10 +116,11 @@ function executeAsync(config, callBack) {
 }
 
 function execute(config) {
-  var xlsx = new JSZip(templateXLSX, {
+  var xlsx = new JSZip.loadAsync(templateXLSX, {
     base64: true,
     checkCRC32: false,
   });
+
   shareStrings = new SortedMap();
   convertedShareStrings = '';
 
