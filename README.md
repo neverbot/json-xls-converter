@@ -18,3 +18,46 @@ None of those projects included any kind of license, I'm distributing this new v
 ## Installation
 
 `npm i json-xls-converter`
+
+## Usage 
+
+To save as a file:
+
+```javascript
+import { converter } from 'json-xls-converter';
+import fs from 'fs/promises';
+
+const json = {
+  foo: 'bar',
+  qux: 'moo',
+  poo: 123,
+  stux: new Date()
+}
+
+const xls = converter(json);
+
+await fs.writeFile('data.xlsx', xls, 'binary');
+```
+
+Or use as express middleware. It adds a convenience xls method to the response object to immediately output an excel as download.
+
+```javascript
+const jsonArr = [{
+  foo: 'bar',
+  qux: 'moo',
+  poo: 123,
+  stux: new Date()
+},
+{
+  foo: 'bar',
+  qux: 'moo',
+  poo: 345,
+  stux: new Date()
+}];
+
+app.use(converter.middleware);
+
+app.get('/', (req, res) => {
+    res.xls('data.xlsx', jsonArr);
+});
+```
