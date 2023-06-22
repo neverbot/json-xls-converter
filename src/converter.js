@@ -2,8 +2,8 @@
 
 import nodeExcel from './excel.js';
 
-const transform = (json, config) => {
-  const conf = transform.prepareJson(json, config);
+const converter = (json, config) => {
+  const conf = converter.prepareJson(json, config);
   const result = nodeExcel.execute(conf);
   return result;
 };
@@ -45,7 +45,7 @@ function getByString(object, path) {
 }
 
 // prepare json to be in the correct format for excel-export
-transform.prepareJson = (json, config) => {
+converter.prepareJson = (json, config) => {
   let res = {};
   const conf = config || {};
   const jsonArr = [].concat(json);
@@ -101,9 +101,9 @@ transform.prepareJson = (json, config) => {
   return res;
 };
 
-transform.middleware = (req, res, next) => {
+converter.middleware = (req, res, next) => {
   res.xls = (fn, data, config) => {
-    const xls = transform(data, config);
+    const xls = converter(data, config);
     res.setHeader('Content-Type', 'application/vnd.openxmlformats');
     res.setHeader('Content-Disposition', 'attachment; filename=' + fn);
     res.end(xls, 'binary');
@@ -112,4 +112,4 @@ transform.middleware = (req, res, next) => {
   next();
 };
 
-export { transform };
+export { converter };

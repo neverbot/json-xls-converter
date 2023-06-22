@@ -2,7 +2,7 @@ import arrayData from './array-data.json' assert { type: 'json' };
 import objectData from './object-data.json' assert { type: 'json' };
 import weirdData from './weird-data.json' assert { type: 'json' };
 
-import { transform } from '../src/converter.js';
+import { converter } from '../src/converter.js';
 
 import { expect } from 'chai';
 
@@ -43,14 +43,14 @@ describe('converter tests', () => {
 
   describe('handling illegal xml characters', () => {
     it('should remove vertical tabs', () => {
-      const res = transform.prepareJson(weirdData);
+      const res = converter.prepareJson(weirdData);
       expect(res.rows[0][1]).to.equal(' foo bar ');
     });
   });
 
   describe('when the data is an empty array', () => {
     it('should create an empty config', () => {
-      const res = transform.prepareJson([]);
+      const res = converter.prepareJson([]);
       expect(res.cols).to.be.empty;
       expect(res.rows).to.be.empty;
     });
@@ -58,7 +58,7 @@ describe('converter tests', () => {
 
   describe('when the data is an empty object', () => {
     it('should create a config with one empty row', () => {
-      const res = transform.prepareJson({});
+      const res = converter.prepareJson({});
       expect(res.cols).to.be.empty;
       expect(res.rows).to.be.an('array');
       expect(res.rows[0]).to.be.empty;
@@ -68,12 +68,12 @@ describe('converter tests', () => {
   describe('when the data is an array', () => {
     describe('cols', () => {
       it('should create a cols part', () => {
-        const res = transform.prepareJson(arrayData);
+        const res = converter.prepareJson(arrayData);
         expect(res.cols).to.exist;
       });
 
       it('should create the correct cols', () => {
-        let res = transform.prepareJson(arrayData);
+        let res = converter.prepareJson(arrayData);
 
         res.cols = removeBeforeCellWrite(res.cols);
 
@@ -94,7 +94,7 @@ describe('converter tests', () => {
       });
 
       it('should create the correct cols when fields are given as array', () => {
-        let res = transform.prepareJson(arrayData, {
+        let res = converter.prepareJson(arrayData, {
           fields: ['date', 'name'],
         });
 
@@ -113,7 +113,7 @@ describe('converter tests', () => {
       });
 
       it('should create the correct cols when fields are given as object', () => {
-        let res = transform.prepareJson(arrayData, {
+        let res = converter.prepareJson(arrayData, {
           fields: {
             number: 'string',
             name: 'string',
@@ -135,7 +135,7 @@ describe('converter tests', () => {
       });
 
       it('should create caption and type field', () => {
-        const cols = transform.prepareJson(arrayData).cols;
+        const cols = converter.prepareJson(arrayData).cols;
         expect(cols[0].caption).to.exist;
         expect(cols[0].type).to.exist;
       });
@@ -143,12 +143,12 @@ describe('converter tests', () => {
 
     describe('rows', () => {
       it('should create a rows part', () => {
-        const res = transform.prepareJson(arrayData);
+        const res = converter.prepareJson(arrayData);
         expect(res.rows).to.exist;
       });
 
       it('should create rows with data in the correct order', () => {
-        const res = transform.prepareJson(arrayData);
+        const res = converter.prepareJson(arrayData);
         expect(res.rows[0]).to.deep.equal(['Ivy Dickson', '2013-05-27T11:04:15-07:00', 10]);
         expect(res.rows[1]).to.deep.equal(['Walker Lynch', '2014-02-07T22:09:58-08:00', 2]);
         expect(res.rows[2]).to.deep.equal(['Maxwell U. Holden', '2013-06-16T05:29:13-07:00', 5]);
@@ -158,7 +158,7 @@ describe('converter tests', () => {
     describe('style', () => {
       it('should have the provided style xml file', () => {
         const fn = 'test.xml';
-        const res = transform.prepareJson(arrayData, {
+        const res = converter.prepareJson(arrayData, {
           style: fn,
         });
 
@@ -170,11 +170,11 @@ describe('converter tests', () => {
   describe('when the data is an object', () => {
     describe('cols', () => {
       it('should create a cols part', () => {
-        const res = transform.prepareJson(objectData);
+        const res = converter.prepareJson(objectData);
         expect(res.cols).to.exist;
       });
       it('should create caption and type field', () => {
-        var cols = transform.prepareJson(objectData).cols;
+        var cols = converter.prepareJson(objectData).cols;
         expect(cols[0].caption).to.exist;
         expect(cols[0].type).to.exist;
       });
@@ -182,7 +182,7 @@ describe('converter tests', () => {
 
     describe('rows', () => {
       it('should create a rows part', () => {
-        const res = transform.prepareJson(objectData);
+        const res = converter.prepareJson(objectData);
         expect(res.rows).to.exist;
       });
     });
@@ -190,7 +190,7 @@ describe('converter tests', () => {
     describe('style', () => {
       it('should have the provided style xml file', () => {
         var fn = 'test.xml';
-        const res = transform.prepareJson(objectData, {
+        const res = converter.prepareJson(objectData, {
           style: fn,
         });
         expect(res.stylesXmlFile).to.equal(fn);
@@ -199,7 +199,7 @@ describe('converter tests', () => {
 
     describe('display of nested fields', () => {
       it('should write nested fields as json', () => {
-        const res = transform.prepareJson(objectData);
+        const res = converter.prepareJson(objectData);
         expect(res.rows[0][3]).to.equal('{"field":"foo"}');
       });
     });
@@ -207,7 +207,7 @@ describe('converter tests', () => {
 
   describe('working with missing fields', () => {
     it('should leave missing fields blank', () => {
-      const res = transform.prepareJson([
+      const res = converter.prepareJson([
         {
           firma: 'transportabel',
           internet: 'http://www.transportabel.de',
@@ -239,7 +239,7 @@ describe('converter tests', () => {
 
   describe('prepping with config', () => {
     it('should get a nested field', () => {
-      const res = transform.prepareJson(objectData, {
+      const res = converter.prepareJson(objectData, {
         fields: ['nested.field'],
       });
 
