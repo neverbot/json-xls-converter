@@ -129,7 +129,12 @@ async function execute(config) {
     checkCRC32: false,
   });
 
-  shareStrings = new SortedMap();
+  // fix: set -1 as default value if key does not exist, to avoid  the deprecated warning:
+  // "Use of a second argument as default value is deprecated to match standards"
+  // SortedMap(values, equals, compare, getDefault)
+  shareStrings = new SortedMap(null, null, null, () => {
+    return -1;
+  });
   convertedShareStrings = '';
 
   var configs = [];
