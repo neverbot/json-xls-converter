@@ -39,7 +39,7 @@ const xls = converter(json);
 await fs.writeFile('data.xlsx', xls, 'binary');
 ```
 
-Or use as express middleware. It adds a convenience xls method to the response object to immediately output an excel as download.
+Or use as an express middleware. It adds a convenience xls method to the response object to immediately output an excel file as a download.
 
 ```javascript
 const jsonArr = [{
@@ -58,6 +58,6 @@ const jsonArr = [{
 app.use(converter.middleware);
 
 app.get('/', (req, res) => {
-    res.xls('data.xlsx', jsonArr);
+  res.xls('data.xlsx', jsonArr);
 });
 ```
