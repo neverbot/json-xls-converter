@@ -13,7 +13,7 @@ function removeBeforeCellWrite(list) {
   });
 }
 
-describe('converter tests', () => {
+describe('Converter Prepare Tests', () => {
   /*
   beforeEach( () => {
     this.addMatchers({
@@ -173,6 +173,7 @@ describe('converter tests', () => {
         const res = converter.prepareJson(objectData);
         expect(res.cols).to.exist;
       });
+
       it('should create caption and type field', () => {
         var cols = converter.prepareJson(objectData).cols;
         expect(cols[0].caption).to.exist;
@@ -193,6 +194,7 @@ describe('converter tests', () => {
         const res = converter.prepareJson(objectData, {
           style: fn,
         });
+
         expect(res.stylesXmlFile).to.equal(fn);
       });
     });
