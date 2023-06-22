@@ -13,7 +13,7 @@ function removeBeforeCellWrite(list) {
   });
 }
 
-describe('prepare', () => {
+describe('converter tests', () => {
   /*
   beforeEach( () => {
     this.addMatchers({
