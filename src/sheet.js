@@ -49,7 +49,12 @@ class Sheet {
 
     for (k = 0; k < colsLength; k++) {
       colStyleIndex = cols[k].captionStyleIndex || 0;
-      row += addStringCell(this, getColumnLetter(k + 1) + 1, cols[k].caption, colStyleIndex);
+      row += this.addStringCell(
+        this,
+        this.getColumnLetter(k + 1) + 1,
+        cols[k].caption,
+        colStyleIndex
+      );
 
       if (cols[k].width) {
         colsWidth +=
@@ -100,16 +105,21 @@ class Sheet {
 
         switch (cellType) {
           case 'number':
-            row += addNumberCell(getColumnLetter(j + 1) + currRow, cellData, styleIndex);
+            row += this.addNumberCell(this.getColumnLetter(j + 1) + currRow, cellData, styleIndex);
             break;
           case 'date':
-            row += addDateCell(getColumnLetter(j + 1) + currRow, cellData, styleIndex);
+            row += this.addDateCell(this.getColumnLetter(j + 1) + currRow, cellData, styleIndex);
             break;
           case 'bool':
-            row += addBoolCell(getColumnLetter(j + 1) + currRow, cellData, styleIndex);
+            row += this.addBoolCell(this.getColumnLetter(j + 1) + currRow, cellData, styleIndex);
             break;
           default:
-            row += addStringCell(this, getColumnLetter(j + 1) + currRow, cellData, styleIndex);
+            row += this.addStringCell(
+              this,
+              this.getColumnLetter(j + 1) + currRow,
+              cellData,
+              styleIndex
+            );
         }
       }
       row += '</x:row>';
@@ -121,6 +131,76 @@ class Sheet {
     }
 
     xlsx.file(config.fileName, sheetFront + '<x:sheetData>' + rows + '</x:sheetData>' + sheetBack);
+  }
+
+  addNumberCell(cellRef, value, styleIndex) {
+    styleIndex = styleIndex || 0;
+    if (value === null) return '';
+    else
+      return '<x:c r="' + cellRef + '" s="' + styleIndex + '" t="n"><x:v>' + value + '</x:v></x:c>';
+  }
+
+  addDateCell(cellRef, value, styleIndex) {
+    styleIndex = styleIndex || 1;
+    if (value === null) return '';
+    else
+      return '<x:c r="' + cellRef + '" s="' + styleIndex + '" t="n"><x:v>' + value + '</x:v></x:c>';
+  }
+
+  addBoolCell(cellRef, value, styleIndex) {
+    styleIndex = styleIndex || 0;
+
+    if (value === null) return '';
+    if (value) {
+      value = 1;
+    } else value = 0;
+
+    return '<x:c r="' + cellRef + '" s="' + styleIndex + '" t="b"><x:v>' + value + '</x:v></x:c>';
+  }
+
+  addStringCell(sheet, cellRef, value, styleIndex) {
+    styleIndex = styleIndex || 0;
+
+    if (value === null) return '';
+
+    if (typeof value === 'string') {
+      value = value
+        .replace(/&/g, '&amp;')
+        .replace(/'/g, '&apos;')
+        .replace(/>/g, '&gt;')
+        .replace(/</g, '&lt;');
+    }
+
+    var i = sheet.shareStrings.get(value);
+
+    if (i < 0) {
+      i = sheet.shareStrings.length;
+      sheet.shareStrings.add(value, i);
+      sheet.convertedShareStrings += '<x:si><x:t>' + value + '</x:t></x:si>';
+    }
+
+    return '<x:c r="' + cellRef + '" s="' + styleIndex + '" t="s"><x:v>' + i + '</x:v></x:c>';
+  }
+
+  getColumnLetter(col) {
+    if (col <= 0) throw 'col must be more than 0';
+
+    var array = new Array();
+
+    while (col > 0) {
+      var remainder = col % 26;
+      col /= 26;
+      col = Math.floor(col);
+
+      if (remainder === 0) {
+        remainder = 26;
+        col--;
+      }
+
+      array.push(64 + remainder);
+    }
+
+    return String.fromCharCode.apply(null, array.reverse());
   }
 }
 
@@ -140,75 +220,5 @@ var endTag = function (tagName) {
   return '</' + tagName + '>';
 };
 */
-
-var addNumberCell = function (cellRef, value, styleIndex) {
-  styleIndex = styleIndex || 0;
-  if (value === null) return '';
-  else
-    return '<x:c r="' + cellRef + '" s="' + styleIndex + '" t="n"><x:v>' + value + '</x:v></x:c>';
-};
-
-var addDateCell = function (cellRef, value, styleIndex) {
-  styleIndex = styleIndex || 1;
-  if (value === null) return '';
-  else
-    return '<x:c r="' + cellRef + '" s="' + styleIndex + '" t="n"><x:v>' + value + '</x:v></x:c>';
-};
-
-var addBoolCell = function (cellRef, value, styleIndex) {
-  styleIndex = styleIndex || 0;
-
-  if (value === null) return '';
-  if (value) {
-    value = 1;
-  } else value = 0;
-
-  return '<x:c r="' + cellRef + '" s="' + styleIndex + '" t="b"><x:v>' + value + '</x:v></x:c>';
-};
-
-var addStringCell = function (sheet, cellRef, value, styleIndex) {
-  styleIndex = styleIndex || 0;
-
-  if (value === null) return '';
-
-  if (typeof value === 'string') {
-    value = value
-      .replace(/&/g, '&amp;')
-      .replace(/'/g, '&apos;')
-      .replace(/>/g, '&gt;')
-      .replace(/</g, '&lt;');
-  }
-
-  var i = sheet.shareStrings.get(value);
-
-  if (i < 0) {
-    i = sheet.shareStrings.length;
-    sheet.shareStrings.add(value, i);
-    sheet.convertedShareStrings += '<x:si><x:t>' + value + '</x:t></x:si>';
-  }
-
-  return '<x:c r="' + cellRef + '" s="' + styleIndex + '" t="s"><x:v>' + i + '</x:v></x:c>';
-};
-
-var getColumnLetter = function (col) {
-  if (col <= 0) throw 'col must be more than 0';
-
-  var array = new Array();
-
-  while (col > 0) {
-    var remainder = col % 26;
-    col /= 26;
-    col = Math.floor(col);
-
-    if (remainder === 0) {
-      remainder = 26;
-      col--;
-    }
-
-    array.push(64 + remainder);
-  }
-
-  return String.fromCharCode.apply(null, array.reverse());
-};
 
 export default Sheet;
