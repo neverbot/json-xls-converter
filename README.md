@@ -5,7 +5,7 @@
 [![GitHub license](https://img.shields.io/github/license/neverbot/json-xls-converter)](https://github.com/neverbot/json-xls-converter/blob/master/LICENSE)
 [![npm](https://img.shields.io/npm/v/json-xls-converter)](https://www.npmjs.com/package/json-xls-converter)
 
-Utility to convert json to an Excel file.
+**Utility to convert json to an Excel file.**
 
 This is an updated version of [json2xls](https://github.com/rikkertkoppes/json2xls) which seems to be abandoned, and have some important vulnerabilities in its dependencies (some of them abandoned too).
 
@@ -17,4 +17,4 @@ None of those projects included any kind of license, I'm distributing this new v
 
 ## Installation
 
-`npm i json-xls-converter`.
+`npm i json-xls-converter`
