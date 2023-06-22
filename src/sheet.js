@@ -30,23 +30,28 @@ class Sheet {
       styleIndex,
       self = this,
       k;
+
     config.fileName =
       'xl/worksheets/' + (config.name || 'sheet').replace(/[*?\]\[\/\/]/g, '') + '.xml';
+
     if (config.stylesXmlFile) {
       var path = config.stylesXmlFile;
       var styles = null;
       styles = fs.readFileSync(path, 'utf8');
+
       if (styles) {
         xlsx.file('xl/styles.xml', styles);
       }
     }
 
-    //first row for column caption
+    // first row for column caption
     row = '<x:row r="1" spans="1:' + colsLength + '">';
     var colStyleIndex;
+
     for (k = 0; k < colsLength; k++) {
       colStyleIndex = cols[k].captionStyleIndex || 0;
       row += addStringCell(self, getColumnLetter(k + 1) + 1, cols[k].caption, colStyleIndex);
+
       if (cols[k].width) {
         colsWidth +=
           '<col customWidth = "1" width="' +
@@ -58,10 +63,11 @@ class Sheet {
           '"/>';
       }
     }
+
     row += '</x:row>';
     rows += row;
 
-    //fill in data
+    // fill in data
     var i,
       j,
       r,
@@ -73,10 +79,12 @@ class Sheet {
     for (i = 0; i < dataLength; i++) {
       (r = data[i]), (currRow = i + 2);
       row = '<x:row r="' + currRow + '" spans="1:' + colsLength + '">';
+
       for (j = 0; j < colsLength; j++) {
         styleIndex = null;
         cellData = r[j];
         cellType = cols[j].type;
+
         if (typeof cols[j].beforeCellWrite === 'function') {
           var e = {
             rowNum: currRow,
@@ -90,6 +98,7 @@ class Sheet {
           // delete e;
           e = null;
         }
+
         switch (cellType) {
           case 'number':
             row += addNumberCell(getColumnLetter(j + 1) + currRow, cellData, styleIndex);
@@ -107,9 +116,11 @@ class Sheet {
       row += '</x:row>';
       rows += row;
     }
+
     if (colsWidth !== '') {
       sheetFront += '<cols>' + colsWidth + '</cols>';
     }
+
     xlsx.file(config.fileName, sheetFront + '<x:sheetData>' + rows + '</x:sheetData>' + sheetBack);
   }
 }
@@ -147,16 +158,20 @@ var addDateCell = function (cellRef, value, styleIndex) {
 
 var addBoolCell = function (cellRef, value, styleIndex) {
   styleIndex = styleIndex || 0;
+
   if (value === null) return '';
   if (value) {
     value = 1;
   } else value = 0;
+
   return '<x:c r="' + cellRef + '" s="' + styleIndex + '" t="b"><x:v>' + value + '</x:v></x:c>';
 };
 
 var addStringCell = function (sheet, cellRef, value, styleIndex) {
   styleIndex = styleIndex || 0;
+
   if (value === null) return '';
+
   if (typeof value === 'string') {
     value = value
       .replace(/&/g, '&amp;')
@@ -164,28 +179,36 @@ var addStringCell = function (sheet, cellRef, value, styleIndex) {
       .replace(/>/g, '&gt;')
       .replace(/</g, '&lt;');
   }
+
   var i = sheet.shareStrings.get(value, -1);
+
   if (i < 0) {
     i = sheet.shareStrings.length;
     sheet.shareStrings.add(value, i);
     sheet.convertedShareStrings += '<x:si><x:t>' + value + '</x:t></x:si>';
   }
+
   return '<x:c r="' + cellRef + '" s="' + styleIndex + '" t="s"><x:v>' + i + '</x:v></x:c>';
 };
 
 var getColumnLetter = function (col) {
   if (col <= 0) throw 'col must be more than 0';
+
   var array = new Array();
+
   while (col > 0) {
     var remainder = col % 26;
     col /= 26;
     col = Math.floor(col);
+
     if (remainder === 0) {
       remainder = 26;
       col--;
     }
+
     array.push(64 + remainder);
   }
+
   return String.fromCharCode.apply(null, array.reverse());
 };
 

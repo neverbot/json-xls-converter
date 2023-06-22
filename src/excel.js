@@ -41,6 +41,7 @@ var shareStrings, convertedShareStrings;
 
 function generateMultiSheets(configs, xlsx) {
   var i = 1;
+
   configs.forEach(function (config) {
     config.name = config.name ? config.name : 'sheet' + i;
     i++;
@@ -52,12 +53,14 @@ function generateMultiSheets(configs, xlsx) {
 
 function generateContentType(configs, xlsx) {
   var workbook = contentTypeFront;
+
   configs.forEach(function (config) {
     workbook +=
       '<Override PartName="/' +
       config.fileName +
       '" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml" />';
   });
+
   workbook += contentTypeBack;
   xlsx.file('[Content_Types].xml', workbook);
 }
@@ -65,6 +68,7 @@ function generateContentType(configs, xlsx) {
 function generateRel(configs, xlsx) {
   var workbook = relFront;
   var i = 1;
+
   configs.forEach(function (config) {
     workbook +=
       '<Relationship Id="rId' +
@@ -74,6 +78,7 @@ function generateRel(configs, xlsx) {
       '.xml"/>';
     i++;
   });
+
   workbook += relBack;
   xlsx.file('xl/_rels/workbook.xml.rels', workbook);
   xlsx.file(
@@ -88,10 +93,12 @@ function generateRel(configs, xlsx) {
 function generateWorkbook(configs, xlsx) {
   var workbook = sheetsFront;
   var i = 1;
+
   configs.forEach(function (config) {
     workbook += '<sheet name="' + config.name + '" sheetId="' + i + '" r:id="rId' + i + '"/>';
     i++;
   });
+
   workbook += sheetsBack;
   xlsx.file('xl/workbook.xml', workbook);
 }
@@ -104,6 +111,7 @@ function generateSharedStringsFile(xlsx) {
       sharedStringsFrontTmp + convertedShareStrings + sharedStringsBack
     );
   }
+
   convertedShareStrings = '';
 }
 
