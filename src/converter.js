@@ -2,9 +2,9 @@
 
 import nodeExcel from './excel.js';
 
-const converter = (json, config) => {
+const converter = async (json, config) => {
   const conf = converter.prepareJson(json, config);
-  const result = nodeExcel.execute(conf);
+  const result = await nodeExcel.execute(conf);
   return result;
 };
 

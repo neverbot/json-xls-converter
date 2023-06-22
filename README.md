@@ -34,7 +34,7 @@ const json = {
   stux: new Date()
 }
 
-const xls = converter(json);
+const xls = await converter(json);
 
 await fs.writeFile('data.xlsx', xls, 'binary');
 ```
