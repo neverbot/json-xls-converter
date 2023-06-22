@@ -1,0 +1,39 @@
+{
+  "name": "json-xls-converter",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "lint": "npx eslint . --ext js,json",
+    "lint:quiet": "npx eslint . --ext js,json --quiet",
+    "lint:fix": "npx eslint . --ext js,json --fix",
+    "test": "NODE_ENV=test npx c8 --all mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/neverbot/json-xls-converter.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/neverbot/json-xls-converter/issues"
+  },
+  "homepage": "https://github.com/neverbot/json-xls-converter#readme",
+  "devDependencies": {
+    "@babel/eslint-parser": "^7.21.8",
+    "c8": "^7.14.0",
+    "chai": "^4.3.7",
+    "eslint": "^8.41.0",
+    "eslint-config-prettier": "^8.8.0",
+    "eslint-plugin-import": "^2.27.5",
+    "eslint-plugin-json-format": "^2.0.1",
+    "eslint-plugin-prettier": "^4.2.1",
+    "mocha": "^10.2.0",
+    "prettier": "^2.8.8"
+  },
+  "dependencies": {
+    "collections": "^5.1.13",
+    "jszip": "^3.10.1"
+  }
+}
