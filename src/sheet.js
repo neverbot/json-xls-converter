@@ -28,7 +28,6 @@ class Sheet {
       row = '',
       colsWidth = '',
       styleIndex,
-      self = this,
       k;
 
     config.fileName =
@@ -50,7 +49,7 @@ class Sheet {
 
     for (k = 0; k < colsLength; k++) {
       colStyleIndex = cols[k].captionStyleIndex || 0;
-      row += addStringCell(self, getColumnLetter(k + 1) + 1, cols[k].caption, colStyleIndex);
+      row += addStringCell(this, getColumnLetter(k + 1) + 1, cols[k].caption, colStyleIndex);
 
       if (cols[k].width) {
         colsWidth +=
@@ -110,7 +109,7 @@ class Sheet {
             row += addBoolCell(getColumnLetter(j + 1) + currRow, cellData, styleIndex);
             break;
           default:
-            row += addStringCell(self, getColumnLetter(j + 1) + currRow, cellData, styleIndex);
+            row += addStringCell(this, getColumnLetter(j + 1) + currRow, cellData, styleIndex);
         }
       }
       row += '</x:row>';
@@ -180,7 +179,7 @@ var addStringCell = function (sheet, cellRef, value, styleIndex) {
       .replace(/</g, '&lt;');
   }
 
-  var i = sheet.shareStrings.get(value, -1);
+  var i = sheet.shareStrings.get(value);
 
   if (i < 0) {
     i = sheet.shareStrings.length;
