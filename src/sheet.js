@@ -172,11 +172,11 @@ class Sheet {
         .replace(/</g, '&lt;');
     }
 
-    let i = this.shareStrings.get(value);
+    let i = this.shareStrings.getElementByKey(value);
 
-    if (i < 0) {
+    if (typeof i === 'undefined') {
       i = this.shareStrings.length;
-      this.shareStrings.add(value, i);
+      this.shareStrings.setElement(value, i);
       this.convertedShareStrings += '<x:si><x:t>' + value + '</x:t></x:si>';
     }
 

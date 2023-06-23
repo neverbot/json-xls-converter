@@ -33,7 +33,7 @@
     "prettier": "^2.8.8"
   },
   "dependencies": {
-    "collections": "^5.1.13",
+    "js-sdsl": "^4.4.1",
     "jszip": "^3.10.1"
   }
 }
