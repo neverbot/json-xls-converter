@@ -81,6 +81,7 @@ converter.prepareJson = (json, config) => {
       if (value && value.constructor == Object) {
         value = JSON.stringify(value);
       }
+
       // replace illegal xml characters with a square
       // see http://www.w3.org/TR/xml/#charsets
       // #x9 | #xA | #xD | [#x20-#xD7FF] | [#xE000-#xFFFD] | [#x10000-#x10FFFF]
@@ -94,10 +95,12 @@ converter.prepareJson = (json, config) => {
       return value;
     });
   });
+
   // add style xml if given
   if (conf.style) {
     res.stylesXmlFile = conf.style;
   }
+
   return res;
 };
 

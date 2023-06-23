@@ -47,12 +47,7 @@ class Sheet {
     for (k = 0; k < colsLength; k++) {
       colStyleIndex = cols[k].captionStyleIndex || 0;
 
-      row += this.addStringCell(
-        this,
-        this.getColumnLetter(k + 1) + 1,
-        cols[k].caption,
-        colStyleIndex
-      );
+      row += this.addStringCell(this.getColumnLetter(k + 1) + 1, cols[k].caption, colStyleIndex);
 
       if (cols[k].width) {
         colsWidth +=
@@ -112,12 +107,7 @@ class Sheet {
             row += this.addBoolCell(this.getColumnLetter(j + 1) + currRow, cellData, styleIndex);
             break;
           default:
-            row += this.addStringCell(
-              this,
-              this.getColumnLetter(j + 1) + currRow,
-              cellData,
-              styleIndex
-            );
+            row += this.addStringCell(this.getColumnLetter(j + 1) + currRow, cellData, styleIndex);
         }
       }
       row += '</x:row>';
@@ -167,7 +157,7 @@ class Sheet {
     return '<x:c r="' + cellRef + '" s="' + styleIndex + '" t="b"><x:v>' + value + '</x:v></x:c>';
   }
 
-  addStringCell(sheet, cellRef, value, styleIndex) {
+  addStringCell(cellRef, value, styleIndex) {
     styleIndex = styleIndex || 0;
 
     if (value === null) {
@@ -182,12 +172,12 @@ class Sheet {
         .replace(/</g, '&lt;');
     }
 
-    let i = sheet.shareStrings.get(value);
+    let i = this.shareStrings.get(value);
 
     if (i < 0) {
-      i = sheet.shareStrings.length;
-      sheet.shareStrings.add(value, i);
-      sheet.convertedShareStrings += '<x:si><x:t>' + value + '</x:t></x:si>';
+      i = this.shareStrings.length;
+      this.shareStrings.add(value, i);
+      this.convertedShareStrings += '<x:si><x:t>' + value + '</x:t></x:si>';
     }
 
     return '<x:c r="' + cellRef + '" s="' + styleIndex + '" t="s"><x:v>' + i + '</x:v></x:c>';
