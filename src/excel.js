@@ -39,16 +39,16 @@ var sharedStringsFront =
 var sharedStringsBack = '</x:sst>';
 var shareStrings, convertedShareStrings;
 
-function generateMultiSheets(configs, xlsx) {
+async function generateMultiSheets(configs, xlsx) {
   var i = 1;
 
-  configs.forEach(function (config) {
+  for (const config of configs) {
     config.name = config.name ? config.name : 'sheet' + i;
     i++;
     var sheet = new Sheet(config, xlsx, shareStrings, convertedShareStrings);
-    sheet.generate();
+    await sheet.generate();
     convertedShareStrings = sheet.convertedShareStrings;
-  });
+  }
 }
 
 function generateContentType(configs, xlsx) {
@@ -145,7 +145,7 @@ async function execute(config) {
     configs.push(config);
   }
 
-  generateMultiSheets(configs, xlsx);
+  await generateMultiSheets(configs, xlsx);
   generateWorkbook(configs, xlsx);
   generateRel(configs, xlsx);
   generateContentType(configs, xlsx);

@@ -1,6 +1,6 @@
 /* eslint no-useless-escape: 0 */
 
-import fs from 'fs';
+import fs from 'fs/promises';
 
 var sheetFront =
   '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><x:worksheet xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:x="http://schemas.openxmlformats.org/spreadsheetml/2006/main">' +
@@ -18,7 +18,7 @@ class Sheet {
     this.convertedShareStrings = convertedShareStrings;
   }
 
-  generate() {
+  async generate() {
     var config = this.config,
       xlsx = this.xlsx;
     var cols = config.cols,
@@ -36,7 +36,7 @@ class Sheet {
     if (config.stylesXmlFile) {
       var path = config.stylesXmlFile;
       var styles = null;
-      styles = fs.readFileSync(path, 'utf8');
+      styles = await fs.readFile(path, 'utf8');
 
       if (styles) {
         xlsx.file('xl/styles.xml', styles);
