@@ -2,11 +2,11 @@
 
 import fs from 'fs/promises';
 
-var sheetFront =
+let sheetFront =
   '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><x:worksheet xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:x="http://schemas.openxmlformats.org/spreadsheetml/2006/main">' +
   ' <x:sheetPr/><x:sheetViews><x:sheetView tabSelected="1" workbookViewId="0" /></x:sheetViews>' +
   ' <x:sheetFormatPr defaultRowHeight="15" />';
-var sheetBack =
+const sheetBack =
   ' <x:pageMargins left="0.75" right="0.75" top="0.75" bottom="0.5" header="0.5" footer="0.75" />' +
   ' <x:headerFooter /></x:worksheet>';
 
@@ -19,10 +19,8 @@ class Sheet {
   }
 
   async generate() {
-    var config = this.config,
-      xlsx = this.xlsx;
-    var cols = config.cols,
-      data = config.rows,
+    let cols = this.config.cols,
+      data = this.config.rows,
       colsLength = cols.length,
       rows = '',
       row = '',
@@ -30,25 +28,25 @@ class Sheet {
       styleIndex,
       k;
 
-    config.fileName =
-      'xl/worksheets/' + (config.name || 'sheet').replace(/[*?\]\[\/\/]/g, '') + '.xml';
+    this.config.fileName =
+      'xl/worksheets/' + (this.config.name || 'sheet').replace(/[*?\]\[\/\/]/g, '') + '.xml';
 
-    if (config.stylesXmlFile) {
-      var path = config.stylesXmlFile;
-      var styles = null;
-      styles = await fs.readFile(path, 'utf8');
+    if (this.config.stylesXmlFile) {
+      let path = this.config.stylesXmlFile;
+      let styles = await fs.readFile(path, 'utf8');
 
       if (styles) {
-        xlsx.file('xl/styles.xml', styles);
+        this.xlsx.file('xl/styles.xml', styles);
       }
     }
 
     // first row for column caption
     row = '<x:row r="1" spans="1:' + colsLength + '">';
-    var colStyleIndex;
+    let colStyleIndex;
 
     for (k = 0; k < colsLength; k++) {
       colStyleIndex = cols[k].captionStyleIndex || 0;
+
       row += this.addStringCell(
         this,
         this.getColumnLetter(k + 1) + 1,
@@ -72,7 +70,7 @@ class Sheet {
     rows += row;
 
     // fill in data
-    var i,
+    let i,
       j,
       r,
       cellData,
@@ -90,7 +88,7 @@ class Sheet {
         cellType = cols[j].type;
 
         if (typeof cols[j].beforeCellWrite === 'function') {
-          var e = {
+          let e = {
             rowNum: currRow,
             styleIndex: null,
             cellType: cellType,
@@ -130,30 +128,41 @@ class Sheet {
       sheetFront += '<cols>' + colsWidth + '</cols>';
     }
 
-    xlsx.file(config.fileName, sheetFront + '<x:sheetData>' + rows + '</x:sheetData>' + sheetBack);
+    this.xlsx.file(
+      this.config.fileName,
+      sheetFront + '<x:sheetData>' + rows + '</x:sheetData>' + sheetBack
+    );
   }
 
   addNumberCell(cellRef, value, styleIndex) {
     styleIndex = styleIndex || 0;
-    if (value === null) return '';
-    else
+
+    if (value === null) {
+      return '';
+    } else
       return '<x:c r="' + cellRef + '" s="' + styleIndex + '" t="n"><x:v>' + value + '</x:v></x:c>';
   }
 
   addDateCell(cellRef, value, styleIndex) {
     styleIndex = styleIndex || 1;
-    if (value === null) return '';
-    else
+
+    if (value === null) {
+      return '';
+    } else
       return '<x:c r="' + cellRef + '" s="' + styleIndex + '" t="n"><x:v>' + value + '</x:v></x:c>';
   }
 
   addBoolCell(cellRef, value, styleIndex) {
     styleIndex = styleIndex || 0;
 
-    if (value === null) return '';
+    if (value === null) {
+      return '';
+    }
     if (value) {
       value = 1;
-    } else value = 0;
+    } else {
+      value = 0;
+    }
 
     return '<x:c r="' + cellRef + '" s="' + styleIndex + '" t="b"><x:v>' + value + '</x:v></x:c>';
   }
@@ -161,7 +170,9 @@ class Sheet {
   addStringCell(sheet, cellRef, value, styleIndex) {
     styleIndex = styleIndex || 0;
 
-    if (value === null) return '';
+    if (value === null) {
+      return '';
+    }
 
     if (typeof value === 'string') {
       value = value
@@ -171,7 +182,7 @@ class Sheet {
         .replace(/</g, '&lt;');
     }
 
-    var i = sheet.shareStrings.get(value);
+    let i = sheet.shareStrings.get(value);
 
     if (i < 0) {
       i = sheet.shareStrings.length;
@@ -183,12 +194,14 @@ class Sheet {
   }
 
   getColumnLetter(col) {
-    if (col <= 0) throw 'col must be more than 0';
+    if (col <= 0) {
+      throw 'col must be more than 0';
+    }
 
-    var array = new Array();
+    let array = new Array();
 
     while (col > 0) {
-      var remainder = col % 26;
+      let remainder = col % 26;
       col /= 26;
       col = Math.floor(col);
 
@@ -205,8 +218,8 @@ class Sheet {
 }
 
 /*
-var startTag = function (obj, tagName, closed) {
-  var result = '<' + tagName,
+let startTag = function (obj, tagName, closed) {
+  let result = '<' + tagName,
     p;
   for (p in obj) {
     result += ' ' + p + '=' + obj[p];
@@ -216,7 +229,7 @@ var startTag = function (obj, tagName, closed) {
   return result;
 };
 
-var endTag = function (tagName) {
+let endTag = function (tagName) {
   return '</' + tagName + '>';
 };
 */
