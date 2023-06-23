@@ -61,3 +61,36 @@ app.get('/', (req, res) => {
   res.xls('data.xlsx', jsonArr);
 });
 ```
+
+## Migrating from json2xls to json-xls-converter
+
+1. `npm remove json2xls && npm install json-xls-converter`
+
+2. Change every import from:
+
+   `import json2xls from 'json2xls';`
+
+   to:
+
+   `import { converter } from 'json-xls-converter';`
+
+3. Change every invocation from:
+
+   `const xls = json2xls(data);`
+
+   to:
+
+   `const xls = await converter(data);`
+
+4. If you are using it as an express middleware, change from:
+
+   `app.use(json2xls.middleware);`
+
+   to:
+   
+   `app.use(converter.middleware);`
+
+
+
+
+
