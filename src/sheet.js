@@ -120,7 +120,7 @@ class Sheet {
 
     this.xlsx.file(
       this.config.fileName,
-      sheetFront + '<x:sheetData>' + rows + '</x:sheetData>' + sheetBack
+      sheetFront + '<x:sheetData>' + rows + '</x:sheetData>' + sheetBack,
     );
   }
 

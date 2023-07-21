@@ -88,7 +88,7 @@ converter.prepareJson = (json, config) => {
       if (typeof value === 'string') {
         value = value.replace(
           /[^\u0009\u000A\u000D\u0020-\uD7FF\uE000-\uFFFD\u10000-\u10FFFF]/g,
-          ''
+          '',
         );
       }
 

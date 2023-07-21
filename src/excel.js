@@ -77,7 +77,7 @@ function generateRel(configs, xlsx) {
     '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
       '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">' +
       '<Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/extended-properties" Target="docProps/app.xml"/>' +
-      '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>'
+      '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>',
   );
 }
 
@@ -99,7 +99,7 @@ function generateSharedStringsFile(xlsx) {
     let sharedStringsFrontTmp = sharedStringsFront.replace(/\$count/g, shareStrings.length);
     xlsx.file(
       'xl/sharedStrings.xml',
-      sharedStringsFrontTmp + convertedShareStrings + sharedStringsBack
+      sharedStringsFrontTmp + convertedShareStrings + sharedStringsBack,
     );
   }
 
