@@ -1,6 +1,6 @@
 {
   "name": "json-xls-converter",
-  "version": "1.4.3",
+  "version": "1.4.4",
   "description": "",
   "main": "index.js",
   "type": "module",
