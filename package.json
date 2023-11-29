@@ -21,16 +21,16 @@
   },
   "homepage": "https://github.com/neverbot/json-xls-converter#readme",
   "devDependencies": {
-    "@babel/eslint-parser": "^7.22.15",
+    "@babel/eslint-parser": "^7.23.3",
     "c8": "^8.0.1",
-    "chai": "^4.3.8",
-    "eslint": "^8.48.0",
+    "chai": "^4.3.10",
+    "eslint": "^8.54.0",
     "eslint-config-prettier": "^9.0.0",
-    "eslint-plugin-import": "^2.28.1",
+    "eslint-plugin-import": "^2.29.0",
     "eslint-plugin-json-format": "^2.0.1",
-    "eslint-plugin-prettier": "^5.0.0",
+    "eslint-plugin-prettier": "^5.0.1",
     "mocha": "^10.2.0",
-    "prettier": "^3.0.3"
+    "prettier": "^3.1.0"
   },
   "dependencies": {
     "js-sdsl": "^4.4.2",
